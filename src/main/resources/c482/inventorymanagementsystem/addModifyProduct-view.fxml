@@ -63,27 +63,27 @@
                   </HBox>
                </children>
             </GridPane>
-            <TableView layoutX="413.0" layoutY="35.0" prefHeight="200.0" prefWidth="343.0">
+            <TableView fx:id="allParts" layoutX="413.0" layoutY="35.0" prefHeight="200.0" prefWidth="343.0">
               <columns>
-                <TableColumn prefWidth="51.0" text="Part ID" />
-                <TableColumn prefWidth="78.0" text="Part Name" />
-                  <TableColumn prefWidth="102.0" text="Inventory Level" />
-                  <TableColumn prefWidth="111.0" text="Price/ Cost per Unit" />
+                <TableColumn fx:id="allId" prefWidth="51.0" text="Part ID" />
+                <TableColumn fx:id="allName" prefWidth="78.0" text="Part Name" />
+                  <TableColumn fx:id="allInv" prefWidth="102.0" text="Inventory Level" />
+                  <TableColumn fx:id="allPrice" prefWidth="111.0" text="Price/ Cost per Unit" />
               </columns>
             </TableView>
-            <TableView layoutX="413.0" layoutY="285.0" prefHeight="200.0" prefWidth="343.0">
+            <TableView fx:id="associatedParts" layoutX="413.0" layoutY="285.0" prefHeight="200.0" prefWidth="343.0">
                <columns>
-                  <TableColumn prefWidth="51.0" text="Part ID" />
-                  <TableColumn prefWidth="78.0" text="Part Name" />
-                  <TableColumn prefWidth="102.0" text="Inventory Level" />
-                  <TableColumn prefWidth="111.0" text="Price/ Cost per Unit" />
+                  <TableColumn fx:id="assId" prefWidth="51.0" text="Part ID" />
+                  <TableColumn fx:id="assName" prefWidth="78.0" text="Part Name" />
+                  <TableColumn fx:id="assInv" prefWidth="102.0" text="Inventory Level" />
+                  <TableColumn fx:id="assPrice" prefWidth="111.0" text="Price/ Cost per Unit" />
                </columns>
             </TableView>
-            <TextField layoutX="568.0" layoutY="5.0" promptText="Seach by Part ID or Name" />
-            <Button layoutX="670.0" layoutY="241.0" mnemonicParsing="false" text="Add" />
-            <Button layoutX="582.0" layoutY="496.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="Remove Associated Part" />
+            <TextField fx:id="searchField" layoutX="568.0" layoutY="5.0" promptText="Seach by Part ID or Name" />
+            <Button fx:id="add" layoutX="670.0" layoutY="241.0" mnemonicParsing="false" text="Add" />
+            <Button fx:id="removeAssociatedParts" layoutX="582.0" layoutY="496.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="Remove Associated Part" />
             <Button fx:id="save" layoutX="582.0" layoutY="537.0" mnemonicParsing="false" onAction="#onSaveButtonClick" text="Save" />
-            <Button layoutX="683.0" layoutY="538.0" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="cancel" layoutX="683.0" layoutY="538.0" mnemonicParsing="false" text="Cancel" />
          </children>
       </Pane>
    </children>

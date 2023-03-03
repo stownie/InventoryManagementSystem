@@ -2,6 +2,7 @@ package c482.inventorymanagementsystem.Controller;
 
 import c482.inventorymanagementsystem.InventoryApplication;
 import c482.inventorymanagementsystem.Model.Inventory;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -49,6 +50,8 @@ public class MainFormController implements Initializable {
     public TableColumn productInvColumn;
     @FXML
     public TableColumn productPriceColumn;
+    @FXML
+    public Button exit;
 
    // public void start(Stage stage) throws IOException {
     @Override
@@ -66,7 +69,7 @@ public class MainFormController implements Initializable {
     productPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
     @FXML
-    public void onAddPartButtonClick() throws IOException {
+    public void onAddPartButtonClick(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("addModifyPart-view.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 825, 400);
@@ -75,7 +78,7 @@ public class MainFormController implements Initializable {
         stage.show();
     }
     @FXML
-    public void onModifyPartButtonClick() throws IOException {
+    public void onModifyPartButtonClick(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("addModifyPart-view.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 825, 400);
@@ -84,7 +87,7 @@ public class MainFormController implements Initializable {
         stage.show();
     }
     @FXML
-    public void onAddProductButtonClick() throws IOException {
+    public void onAddProductButtonClick(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("addModifyProduct-view.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 825, 700);
@@ -93,12 +96,16 @@ public class MainFormController implements Initializable {
         stage.show();
     }
     @FXML
-    public void onModifyProductButtonClick() throws IOException {
+    public void onModifyProductButtonClick(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("addModifyProduct-view.fxml"));
         Stage stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 825, 700);
         stage.setTitle("Modify Product");
         stage.setScene(scene);
         stage.show();
+    }
+    @FXML
+    public void onExitButtonClick(ActionEvent event){
+        System.exit(0);
     }
 }
