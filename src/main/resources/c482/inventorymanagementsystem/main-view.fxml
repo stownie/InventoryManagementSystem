@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="c482.inventorymanagementsystem.Controller.MainFormController">
    <children>
@@ -23,12 +24,17 @@
                     </columns>
                   </TableView>
                   <Label layoutX="27.0" layoutY="13.0" text="Parts" />
-                  <TextField layoutX="196.0" layoutY="8.0" promptText="Search by Part ID or Name" />
+                  <TextField fx:id="searchPartField" layoutX="196.0" layoutY="8.0" onKeyTyped="#onPartSearch" promptText="Search by Part ID or Name" />
                   <Button fx:id="addPart" layoutX="187.0" layoutY="242.0" mnemonicParsing="false" onAction="#onAddPartButtonClick" text="Add" />
                   <Button fx:id="modifyPart" layoutX="249.0" layoutY="242.0" mnemonicParsing="false" onAction="#onModifyPartButtonClick" text="Modify" />
-                  <Button fx:id="deletePart" layoutX="312.0" layoutY="242.0" mnemonicParsing="false" text="Delete" />
+                  <Button fx:id="deletePart" layoutX="312.0" layoutY="242.0" mnemonicParsing="false" onAction="#onDeletePartButtonClick" text="Delete" />
                </children>
             </Pane>
+            <Label fx:id="noPartResult" alignment="CENTER" contentDisplay="CENTER" layoutY="38.0" prefHeight="34.0" prefWidth="400.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane prefHeight="400.0" prefWidth="400.0">
@@ -44,13 +50,18 @@
                      </columns>
                   </TableView>
                   <Label layoutX="27.0" layoutY="13.0" text="Product" />
-                  <TextField layoutX="196.0" layoutY="8.0" promptText="Search by Product ID or Name" />
+                  <TextField fx:id="searchProductField" layoutX="196.0" layoutY="8.0" onKeyTyped="#onProductSearch" promptText="Search by Product ID or Name" />
                   <Button fx:id="addProduct" layoutX="187.0" layoutY="242.0" mnemonicParsing="false" onAction="#onAddProductButtonClick" text="Add" />
                   <Button fx:id="modifyProduct" layoutX="249.0" layoutY="242.0" mnemonicParsing="false" onAction="#onModifyProductButtonClick" text="Modify" />
-                  <Button fx:id="deleteProduct" layoutX="312.0" layoutY="242.0" mnemonicParsing="false" text="Delete" />
+                  <Button fx:id="deleteProduct" layoutX="312.0" layoutY="242.0" mnemonicParsing="false" onAction="#onDeleteProductButtonClick" text="Delete" />
                </children>
             </Pane>
             <Button fx:id="exit" layoutX="302.0" layoutY="361.0" mnemonicParsing="false" onAction="#onExitButtonClick" text="Exit" />
+            <Label fx:id="noProductResult" alignment="CENTER" contentDisplay="CENTER" layoutY="38.0" prefHeight="34.0" prefWidth="400.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>

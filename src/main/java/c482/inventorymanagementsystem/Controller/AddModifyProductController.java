@@ -1,18 +1,25 @@
 package c482.inventorymanagementsystem.Controller;
 
+import c482.inventorymanagementsystem.InventoryApplication;
 import c482.inventorymanagementsystem.Model.Inventory;
 import c482.inventorymanagementsystem.Model.Part;
 import c482.inventorymanagementsystem.Model.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static c482.inventorymanagementsystem.Model.Inventory.lookupPart;
 
 public class AddModifyProductController implements Initializable {
     private int id;
@@ -21,7 +28,7 @@ public class AddModifyProductController implements Initializable {
     private int stock;
     private int min;
     private int max;
-    private ObservableList<Part> associateParts = FXCollections.observableArrayList();
+    private ObservableList associateParts = FXCollections.observableArrayList();
     @FXML
     public Button save;
     @FXML
@@ -44,6 +51,8 @@ public class AddModifyProductController implements Initializable {
     public TextField minField;
     @FXML
     public TextField searchField;
+    @FXML
+    public Label noPartResult;
     @FXML
     public TableView allParts;
     @FXML
@@ -80,17 +89,109 @@ public class AddModifyProductController implements Initializable {
         assInv.setCellValueFactory(new PropertyValueFactory<>("stock"));
         assPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
     }
-    public void onSaveButtonClick(){
+
+    public void onSaveButtonClick() throws IOException {
         id = Integer.parseInt(idField.getText());
         name = nameField.getText();
         price = Double.parseDouble(priceField.getText());
         stock = Integer.parseInt(inventoryField.getText());
         max = Integer.parseInt(maxField.getText());
         min = Integer.parseInt(minField.getText());
-        Product product = new Product(id, name, price, stock, max, min);
-        Inventory.addProduct(product);
+        associateParts = associatedParts.getItems();
+        Product product = new Product(associateParts, id, name, price, stock, max, min);
+        if(Inventory.lookupProduct(id) == null) {
+            Inventory.addProduct(product);
+        }
+        else {
+            Inventory.updateProduct(id, product);
+        }
 
         Stage stage = (Stage) save.getScene().getWindow();
         stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+        stage.setTitle("Inventory Management Application");
+        stage.setScene(scene);
+        stage.show();
+    }
+    public void onCancelButtonClick() throws IOException {
+        Stage stage = (Stage) cancel.getScene().getWindow();
+        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+        stage.setTitle("Inventory Management Application");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void onRemoveAssociatedPartsButtonClick(){
+        Product product = Inventory.lookupProduct(Integer.parseInt(idField.getText()));
+        ObservableList<Part> productParts = product.getAllAssociatedParts();
+        Part part = (Part) associatedParts.getSelectionModel().getSelectedItem();
+        if (part != null){
+            productParts.remove(part);
+            associatedParts.setItems(productParts);
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Remove Part Error");
+            alert.setHeaderText("Remove Part Error");
+            alert.setContentText("You must select a Part before removing from Product");
+            alert.showAndWait();
+        }
+    }
+    public void onAddButtonClick(){
+        Part part = (Part) allParts.getSelectionModel().getSelectedItem();
+        associateParts = associatedParts.getItems();
+        if (part != null){
+            associateParts.add(part);
+            associatedParts.setItems(associateParts);
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Add Part Error");
+            alert.setHeaderText("Add Part Error");
+            alert.setContentText("You must select a Part before adding to Product");
+            alert.showAndWait();
+        }
+
+    }
+    protected void autoGenerateID(){
+        int i = 1;
+        while (Inventory.lookupProduct(i) != null){
+            ++i;
+        }
+        idField.setText(String.valueOf(i));
+    }
+    public void sendProduct(Product product){
+        idField.setText(String.valueOf(product.getId()));
+        nameField.setText(product.getName());
+        inventoryField.setText(String.valueOf(product.getStock()));
+        priceField.setText(String.valueOf(product.getPrice()));
+        maxField.setText(String.valueOf(product.getMax()));
+        minField.setText(String.valueOf(product.getMin()));
+        associatedParts.setItems(product.getAllAssociatedParts());
+
+    }
+    public void onPartSearch(KeyEvent event){
+        String partName = searchField.getText();
+        ObservableList<Part> parts = lookupPart(partName);
+        if (parts.size() == 0) {
+            try {
+                int partId = Integer.parseInt(partName);
+                Part part = lookupPart(partId);
+                if (part != null)
+                    parts.add(part);
+            } catch (NumberFormatException e) {
+                //ignore
+            }
+        }
+        allParts.setItems(parts);
+
+        if (parts.size() == 0) {
+            noPartResult.setText("Search Returned No Results");
+        } else {
+            noPartResult.setText(null);
+        }
     }
 }

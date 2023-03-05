@@ -56,18 +56,14 @@ public class Inventory {
         return nameProducts;
     }
     public static void updatePart(int index, Part selectedPart){
-        for (Part part : Inventory.getAllParts()){
-            if (part.getId() == index){
-                Inventory.allParts.set(index, selectedPart);
-            }
-        }
+        Part oldPart = Inventory.lookupPart(index);
+        Inventory.deletePart(oldPart);
+        Inventory.addPart(selectedPart);
     }
     public static void updateProduct(int index, Product newProduct){
-        for (Product product : Inventory.getAllProducts()){
-            if (product.getId() == index){
-                Inventory.allProducts.set(index, newProduct);
-            }
-        }
+        Product oldProduct = Inventory.lookupProduct(index);
+        Inventory.deleteProduct(oldProduct);
+        Inventory.addProduct(newProduct);
     }
     public static boolean deletePart(Part selectedPart) {
         if (allParts.contains(selectedPart)) {
@@ -92,4 +88,5 @@ public class Inventory {
     public static ObservableList<Product> getAllProducts(){
         return allProducts;
     }
+
 }

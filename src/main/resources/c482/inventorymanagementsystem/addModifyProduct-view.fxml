@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="600.0" prefWidth="825.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="c482.inventorymanagementsystem.Controller.AddModifyProductController">
    <children>
@@ -32,7 +33,7 @@
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Label prefHeight="25.0" prefWidth="85.0" text="ID" />
-                        <TextField fx:id="idField" prefHeight="26.0" prefWidth="172.0" />
+                        <TextField fx:id="idField" disable="true" editable="false" prefHeight="26.0" prefWidth="172.0" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
@@ -79,11 +80,16 @@
                   <TableColumn fx:id="assPrice" prefWidth="111.0" text="Price/ Cost per Unit" />
                </columns>
             </TableView>
-            <TextField fx:id="searchField" layoutX="568.0" layoutY="5.0" promptText="Seach by Part ID or Name" />
-            <Button fx:id="add" layoutX="670.0" layoutY="241.0" mnemonicParsing="false" text="Add" />
-            <Button fx:id="removeAssociatedParts" layoutX="582.0" layoutY="496.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="160.0" text="Remove Associated Part" />
+            <TextField fx:id="searchField" layoutX="568.0" layoutY="5.0" onKeyTyped="#onPartSearch" promptText="Seach by Part ID or Name" />
+            <Button fx:id="add" layoutX="670.0" layoutY="241.0" mnemonicParsing="false" onAction="#onAddButtonClick" text="Add" />
+            <Button fx:id="removeAssociatedPart" layoutX="582.0" layoutY="496.0" mnemonicParsing="false" onAction="#onRemoveAssociatedPartsButtonClick" prefHeight="26.0" prefWidth="160.0" text="Remove Associated Part" />
             <Button fx:id="save" layoutX="582.0" layoutY="537.0" mnemonicParsing="false" onAction="#onSaveButtonClick" text="Save" />
-            <Button fx:id="cancel" layoutX="683.0" layoutY="538.0" mnemonicParsing="false" text="Cancel" />
+            <Button fx:id="cancel" layoutX="683.0" layoutY="538.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="Cancel" />
+            <Label fx:id="noPartResult" alignment="CENTER" layoutX="221.0" layoutY="4.0" prefHeight="29.0" prefWidth="343.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>

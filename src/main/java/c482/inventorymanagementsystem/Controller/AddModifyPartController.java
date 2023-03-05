@@ -1,39 +1,59 @@
 package c482.inventorymanagementsystem.Controller;
 
+import c482.inventorymanagementsystem.InventoryApplication;
+import c482.inventorymanagementsystem.Model.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.fxml.Initializable;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
-public class AddModifyPartController {
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class AddModifyPartController implements Initializable {
     private int id;
     private String name;
     private double price;
     private int stock;
     private int min;
     private int max;
+    private int machineID;
+    private String coName;
     @FXML
-    protected RadioButton inHouse, outsourced;
+    public RadioButton inHouse, outsourced;
     @FXML
-    protected Label machineCoName;
+    public Label machineCoName;
     @FXML
-    protected Button save;
+    public Button cancel;
     @FXML
-    protected TextField idField;
+    public Button save;
     @FXML
-    protected TextField nameField;
+    public TextField idField;
     @FXML
-    protected TextField inventoryField;
+    public TextField nameField;
     @FXML
-    protected TextField priceField;
+    public TextField inventoryField;
     @FXML
-    protected TextField maxField;
+    public TextField priceField;
     @FXML
-    protected TextField minField;
+    public TextField maxField;
     @FXML
-    protected TextField machineIDField;
+    public TextField minField;
+    @FXML
+    public TextField machineIDField;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle){
+    }
     @FXML
     public void onRadioSelection(){
         if(inHouse.isSelected()){
@@ -43,9 +63,75 @@ public class AddModifyPartController {
             machineCoName.setText("Company Name");
         }
     }
+
     @FXML
-    public void onSaveButtonClick(){
-
+    public void onCancelButtonClick(ActionEvent event) throws IOException {
+        Stage stage = (Stage) cancel.getScene().getWindow();
+        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+        stage.setTitle("Inventory Management Application");
+        stage.setScene(scene);
+        stage.show();
     }
-
+    @FXML
+    public void onSaveButtonClick(ActionEvent event) throws IOException {
+        id = Integer.parseInt(idField.getText());
+        name = nameField.getText();
+        price = Double.parseDouble(priceField.getText());
+        stock = Integer.parseInt(inventoryField.getText());
+        max = Integer.parseInt(maxField.getText());
+        min = Integer.parseInt(minField.getText());
+        if (inHouse.isSelected()) {
+            machineID = Integer.parseInt(machineIDField.getText());
+            InHousePart part = new InHousePart(id, name, price, stock, max, min, machineID);
+            if (Inventory.lookupPart(id) == null) {
+                Inventory.addPart(part);
+            }
+            else {
+                Inventory.updatePart(id, part);
+            }
+        }
+        else if (outsourced.isSelected()) {
+            coName = machineIDField.getText();
+            OutsourcePart part = new OutsourcePart(id, name, price, stock, max, min, coName);
+            if (Inventory.lookupPart(id) == null) {
+                Inventory.addPart(part);
+            } else {
+                Inventory.updatePart(id, part);
+            }
+        }
+        Stage stage = (Stage) save.getScene().getWindow();
+        stage.close();
+        FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+        stage.setTitle("Inventory Management Application");
+        stage.setScene(scene);
+        stage.show();
+    }
+    public void sendPart(Part part){
+        idField.setText(String.valueOf(part.getId()));
+        nameField.setText(part.getName());
+        inventoryField.setText(String.valueOf(part.getStock()));
+        priceField.setText(String.valueOf(part.getPrice()));
+        maxField.setText(String.valueOf(part.getMax()));
+        minField.setText(String.valueOf(part.getMin()));
+        if (part instanceof InHousePart){
+            inHouse.setSelected(true);
+            machineIDField.setText(String.valueOf(((InHousePart) part).getMachineID()));
+        }
+        else if(part instanceof OutsourcePart){
+            outsourced.setSelected(true);
+            machineIDField.setText(String.valueOf(((OutsourcePart) part).getCompanyName()));
+        }
+    }
+    protected void autoGenerateID(){
+        int i = 1;
+        while (Inventory.lookupPart(i) != null){
+            ++i;
+        }
+        idField.setText(String.valueOf(i));
+    }
 }
+
+

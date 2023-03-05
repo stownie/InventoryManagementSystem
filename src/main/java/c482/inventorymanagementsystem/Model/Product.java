@@ -12,7 +12,9 @@ public class Product {
     private int stock;
     private int min;
     private int max;
-    public Product(int id, String name, double price, int stock, int min, int max){
+    public Product(){}
+    public Product(ObservableList<Part> associatedParts, int id, String name, double price, int stock, int min, int max){
+        this.associatedParts = associatedParts;
         this.id = id;
         this.name = name;
         this.price = price;
