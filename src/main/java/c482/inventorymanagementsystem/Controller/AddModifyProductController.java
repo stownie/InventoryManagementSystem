@@ -125,12 +125,11 @@ public class AddModifyProductController implements Initializable {
     }
 
     public void onRemoveAssociatedPartsButtonClick(){
-        Product product = Inventory.lookupProduct(Integer.parseInt(idField.getText()));
-        ObservableList<Part> productParts = product.getAllAssociatedParts();
         Part part = (Part) associatedParts.getSelectionModel().getSelectedItem();
+        associateParts = associatedParts.getItems();
         if (part != null){
-            productParts.remove(part);
-            associatedParts.setItems(productParts);
+            associateParts.remove(part);
+            associatedParts.setItems(associateParts);
         }
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
