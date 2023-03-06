@@ -17,9 +17,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static c482.inventorymanagementsystem.Model.Inventory.lookupPart;
+import static c482.inventorymanagementsystem.Model.Inventory.lookupProduct;
 
 public class AddModifyProductController implements Initializable {
     private int id;
@@ -28,7 +30,7 @@ public class AddModifyProductController implements Initializable {
     private int stock;
     private int min;
     private int max;
-    private ObservableList associateParts = FXCollections.observableArrayList();
+    private ObservableList<Part> associateParts = FXCollections.observableArrayList();
     @FXML
     public Button save;
     @FXML
@@ -54,9 +56,9 @@ public class AddModifyProductController implements Initializable {
     @FXML
     public Label noPartResult;
     @FXML
-    public TableView allParts;
+    public TableView<Part> allParts;
     @FXML
-    public TableView associatedParts;
+    public TableView<Part> associatedParts;
     @FXML
     public TableColumn allId;
     @FXML
@@ -98,21 +100,36 @@ public class AddModifyProductController implements Initializable {
         max = Integer.parseInt(maxField.getText());
         min = Integer.parseInt(minField.getText());
         associateParts = associatedParts.getItems();
-        Product product = new Product(associateParts, id, name, price, stock, max, min);
-        if(Inventory.lookupProduct(id) == null) {
-            Inventory.addProduct(product);
+        if(max >= min && stock >= min && stock <= max ) {
+            Product product = new Product(associateParts, id, name, price, stock, max, min);
+
+            if (Inventory.lookupProduct(id) == null) {
+                Inventory.addProduct(product);
+            } else {
+                Inventory.updateProduct(id, product);
+            }
+            Stage stage = (Stage) save.getScene().getWindow();
+            stage.close();
+            FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+            stage.setTitle("Inventory Management Application");
+            stage.setScene(scene);
+            stage.show();
+        }
+        else if (min > max){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("User input error");
+            alert.setHeaderText("Min/Max Error");
+            alert.setContentText("Max inventory must be greater than min inventory.");
+            alert.showAndWait();
         }
         else {
-            Inventory.updateProduct(id, product);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("User input error");
+            alert.setHeaderText("Stock Error");
+            alert.setContentText("Your inventory level must be between min and max inventory.");
+            alert.showAndWait();
         }
-
-        Stage stage = (Stage) save.getScene().getWindow();
-        stage.close();
-        FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
-        stage.setTitle("Inventory Management Application");
-        stage.setScene(scene);
-        stage.show();
     }
     public void onCancelButtonClick() throws IOException {
         Stage stage = (Stage) cancel.getScene().getWindow();
@@ -125,11 +142,19 @@ public class AddModifyProductController implements Initializable {
     }
 
     public void onRemoveAssociatedPartsButtonClick(){
-        Part part = (Part) associatedParts.getSelectionModel().getSelectedItem();
+        Part part = associatedParts.getSelectionModel().getSelectedItem();
         associateParts = associatedParts.getItems();
         if (part != null){
-            associateParts.remove(part);
-            associatedParts.setItems(associateParts);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Removal of Associated Part");
+            alert.setHeaderText("Confirm Removal of Associated Part");
+            alert.setContentText("Are you sure you want to remove this Associated Part? This action cannot be undone.");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (((Optional<?>) result).get() == ButtonType.OK) {
+                associateParts.remove(part);
+                associatedParts.setItems(associateParts);
+            }
+            else {}
         }
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -140,11 +165,20 @@ public class AddModifyProductController implements Initializable {
         }
     }
     public void onAddButtonClick(){
-        Part part = (Part) allParts.getSelectionModel().getSelectedItem();
+        Part part = allParts.getSelectionModel().getSelectedItem();
         associateParts = associatedParts.getItems();
-        if (part != null){
-            associateParts.add(part);
-            associatedParts.setItems(associateParts);
+        if (part != null) {
+            if (!associateParts.contains(part)) {
+                associateParts.add(part);
+                associatedParts.setItems(associateParts);
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Add Part Error");
+                alert.setHeaderText("Add Part Error");
+                alert.setContentText("This part has already been added to this product.");
+                alert.showAndWait();
+            }
         }
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);

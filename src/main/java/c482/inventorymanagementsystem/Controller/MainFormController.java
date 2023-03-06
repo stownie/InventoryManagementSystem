@@ -184,15 +184,24 @@ public class MainFormController implements Initializable {
     public void onDeleteProductButtonClick(ActionEvent event) {
         Product product = (Product) productTable.getSelectionModel().getSelectedItem();
         if (product != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Product Delete");
-            alert.setHeaderText("Confirm Product Delete");
-            alert.setContentText("Are you sure you want to delete this product? This action cannot be undone.");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (((Optional<?>) result).get() == ButtonType.OK) {
-                Inventory.deleteProduct(product);
+            ObservableList<Part> productParts = product.getAllAssociatedParts();
+            if (productParts.size() < 1) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirm Product Delete");
+                alert.setHeaderText("Confirm Product Delete");
+                alert.setContentText("Are you sure you want to delete this product? This action cannot be undone.");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (((Optional<?>) result).get() == ButtonType.OK) {
+                    Inventory.deleteProduct(product);
+                }
+                else {}
             }
             else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Product Delete Error");
+                alert.setHeaderText("Product Has Associated Parts");
+                alert.setContentText("Products with Associated Parts can not be deleted.");
+                Optional<ButtonType> result = alert.showAndWait();
             }
         }
         else {

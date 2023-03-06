@@ -7,10 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.fxml.Initializable;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -82,32 +79,46 @@ public class AddModifyPartController implements Initializable {
         stock = Integer.parseInt(inventoryField.getText());
         max = Integer.parseInt(maxField.getText());
         min = Integer.parseInt(minField.getText());
-        if (inHouse.isSelected()) {
-            machineID = Integer.parseInt(machineIDField.getText());
-            InHousePart part = new InHousePart(id, name, price, stock, max, min, machineID);
-            if (Inventory.lookupPart(id) == null) {
-                Inventory.addPart(part);
+        if(max >= min && stock >= min && stock <= max ) {
+            if (inHouse.isSelected()) {
+                machineID = Integer.parseInt(machineIDField.getText());
+                InHousePart part = new InHousePart(id, name, price, stock, max, min, machineID);
+                if (Inventory.lookupPart(id) == null) {
+                    Inventory.addPart(part);
+                } else {
+                    Inventory.updatePart(id, part);
+                }
+            } else if (outsourced.isSelected()) {
+                coName = machineIDField.getText();
+                OutsourcePart part = new OutsourcePart(id, name, price, stock, max, min, coName);
+                if (Inventory.lookupPart(id) == null) {
+                    Inventory.addPart(part);
+                } else {
+                    Inventory.updatePart(id, part);
+                }
             }
-            else {
-                Inventory.updatePart(id, part);
-            }
+            Stage stage = (Stage) save.getScene().getWindow();
+            stage.close();
+            FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+            stage.setTitle("Inventory Management Application");
+            stage.setScene(scene);
+            stage.show();
         }
-        else if (outsourced.isSelected()) {
-            coName = machineIDField.getText();
-            OutsourcePart part = new OutsourcePart(id, name, price, stock, max, min, coName);
-            if (Inventory.lookupPart(id) == null) {
-                Inventory.addPart(part);
-            } else {
-                Inventory.updatePart(id, part);
-            }
+        else if(min > max){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("User input error");
+            alert.setHeaderText("Min/Max Error");
+            alert.setContentText("Max inventory must be greater than min inventory.");
+            alert.showAndWait();
         }
-        Stage stage = (Stage) save.getScene().getWindow();
-        stage.close();
-        FXMLLoader fxmlLoader = new FXMLLoader(InventoryApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
-        stage.setTitle("Inventory Management Application");
-        stage.setScene(scene);
-        stage.show();
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("User input error");
+            alert.setHeaderText("Stock Error");
+            alert.setContentText("Your inventory level must be between min and max inventory.");
+            alert.showAndWait();
+        }
     }
     public void sendPart(Part part){
         idField.setText(String.valueOf(part.getId()));
